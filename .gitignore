@@ -1,0 +1,19 @@
+# Byte-compiled / optimized / DLL files
+*.pyc
+
+# Backup files
+*.backup
+
+# Numpy files
+*.npy
+
+# VSCode settings
+.vscode/
+
+# Python cache
+__pycache__/
+
+# Specific directories
+dgcnn_utils/data/
+dgcnn_utils/outputs/
+dgcnn_utils/.DS_Store
