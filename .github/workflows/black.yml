@@ -1,0 +1,39 @@
+name: Black Formatter
+
+on:
+  push:
+    branches:
+      - main  # Default branch name
+  pull_request:
+    branches:
+      - main  # Default branch name
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'  # Your Python version
+
+    - name: Install dependencies
+      run: pip install black
+
+    - name: Run Black
+      run: black --check .
+
+    - name: Create Pull Request
+      if: failure()
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: 'Run Black formatter'
+        committer: GitHub <noreply@github.com>
+        author: GitHub <noreply@github.com>
+        title: 'Black Formatter'
+        body: 'This PR formats the code using Black'
+        branch: black-fix-branch
