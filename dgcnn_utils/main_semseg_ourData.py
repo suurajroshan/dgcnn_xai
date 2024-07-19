@@ -440,8 +440,6 @@ if __name__ == "__main__":
                         help='visualize the model')
     parser.add_argument('--visu_format', type=str, default='ply',
                         help='file format of visualization')
-    parser.add_argument('--custom_mode', type=bool, required=True,
-                        help='True when using custom dataset')
     parser.add_argument('--num_features', type=int, default=5,
                         help='Number of classes')
     args = parser.parse_args()

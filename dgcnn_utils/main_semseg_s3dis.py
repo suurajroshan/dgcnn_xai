@@ -22,7 +22,6 @@ import numpy as np
 from torch.utils.data import DataLoader
 from util import cal_loss, IOStream
 import sklearn.metrics as metrics
-from plyfile import PlyData, PlyElement
 
 global room_seg
 room_seg = []
@@ -56,90 +55,90 @@ def calculate_sem_IoU(pred_np, seg_np, visual=False):
     return I_all / U_all 
 
 
-def visualization(visu, visu_format, test_choice, data, seg, pred, visual_file_index, semseg_colors):
-    global room_seg, room_pred
-    global visual_warning
-    visu = visu.split('_')
-    for i in range(0, data.shape[0]):
-        RGB = []
-        RGB_gt = [] 
-        skip = False
-        with open("data/indoor3d_sem_seg_hdf5_data_test/room_filelist.txt") as f:
-            files = f.readlines()
-            test_area = files[visual_file_index][5]
-            roomname = files[visual_file_index][7:-1]
-            if visual_file_index + 1 < len(files):
-                roomname_next = files[visual_file_index+1][7:-1]
-            else:
-                roomname_next = ''
-        if visu[0] != 'all':
-            if len(visu) == 2:
-                if visu[0] != 'area' or visu[1] != test_area:
-                    skip = True 
-                else:
-                    visual_warning = False
-            elif len(visu) == 4:
-                if visu[0] != 'area' or visu[1] != test_area or visu[2] != roomname.split('_')[0] or visu[3] != roomname.split('_')[1]:
-                    skip = True
-                else:
-                    visual_warning = False  
-            else:
-                skip = True
-        elif test_choice !='all':
-            skip = True
-        else:
-            visual_warning = False
-        if skip:
-            visual_file_index = visual_file_index + 1
-        else:
-            if not os.path.exists('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname):
-                os.makedirs('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname)
+# def visualization(visu, visu_format, test_choice, data, seg, pred, visual_file_index, semseg_colors):
+#     global room_seg, room_pred
+#     global visual_warning
+#     visu = visu.split('_')
+#     for i in range(0, data.shape[0]):
+#         RGB = []
+#         RGB_gt = [] 
+#         skip = False
+#         with open("data/indoor3d_sem_seg_hdf5_data_test/room_filelist.txt") as f:
+#             files = f.readlines()
+#             test_area = files[visual_file_index][5]
+#             roomname = files[visual_file_index][7:-1]
+#             if visual_file_index + 1 < len(files):
+#                 roomname_next = files[visual_file_index+1][7:-1]
+#             else:
+#                 roomname_next = ''
+#         if visu[0] != 'all':
+#             if len(visu) == 2:
+#                 if visu[0] != 'area' or visu[1] != test_area:
+#                     skip = True 
+#                 else:
+#                     visual_warning = False
+#             elif len(visu) == 4:
+#                 if visu[0] != 'area' or visu[1] != test_area or visu[2] != roomname.split('_')[0] or visu[3] != roomname.split('_')[1]:
+#                     skip = True
+#                 else:
+#                     visual_warning = False  
+#             else:
+#                 skip = True
+#         elif test_choice !='all':
+#             skip = True
+#         else:
+#             visual_warning = False
+#         if skip:
+#             visual_file_index = visual_file_index + 1
+#         else:
+#             if not os.path.exists('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname):
+#                 os.makedirs('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname)
             
-            data = np.loadtxt('data/indoor3d_sem_seg_hdf5_data_test/raw_data3d/Area_'+test_area+'/'+roomname+'('+str(visual_file_index)+').txt')
-            visual_file_index = visual_file_index + 1
-            for j in range(0, data.shape[0]):
-                RGB.append(semseg_colors[int(pred[i][j])])
-                RGB_gt.append(semseg_colors[int(seg[i][j])])
-            data = data[:,[1,2,0]]
-            xyzRGB = np.concatenate((data, np.array(RGB)), axis=1)
-            xyzRGB_gt = np.concatenate((data, np.array(RGB_gt)), axis=1)
-            room_seg.append(seg[i].cpu().numpy())
-            room_pred.append(pred[i].cpu().numpy()) 
-            f = open('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'.txt', "a")
-            f_gt = open('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.txt', "a")
-            np.savetxt(f, xyzRGB, fmt='%s', delimiter=' ') 
-            np.savetxt(f_gt, xyzRGB_gt, fmt='%s', delimiter=' ') 
+#             data = np.loadtxt('data/indoor3d_sem_seg_hdf5_data_test/raw_data3d/Area_'+test_area+'/'+roomname+'('+str(visual_file_index)+').txt')
+#             visual_file_index = visual_file_index + 1
+#             for j in range(0, data.shape[0]):
+#                 RGB.append(semseg_colors[int(pred[i][j])])
+#                 RGB_gt.append(semseg_colors[int(seg[i][j])])
+#             data = data[:,[1,2,0]]
+#             xyzRGB = np.concatenate((data, np.array(RGB)), axis=1)
+#             xyzRGB_gt = np.concatenate((data, np.array(RGB_gt)), axis=1)
+#             room_seg.append(seg[i].cpu().numpy())
+#             room_pred.append(pred[i].cpu().numpy()) 
+#             f = open('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'.txt', "a")
+#             f_gt = open('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.txt', "a")
+#             np.savetxt(f, xyzRGB, fmt='%s', delimiter=' ') 
+#             np.savetxt(f_gt, xyzRGB_gt, fmt='%s', delimiter=' ') 
             
-            if roomname != roomname_next:
-                mIoU = np.nanmean(calculate_sem_IoU(np.array(room_pred), np.array(room_seg)))
-                mIoU = str(round(mIoU, 4))
-                room_pred = []
-                room_seg = []
-                if visu_format == 'ply':
-                    filepath = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_pred_'+mIoU+'.ply'
-                    filepath_gt = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.ply'
-                    xyzRGB = np.loadtxt('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'.txt')
-                    xyzRGB_gt = np.loadtxt('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.txt')
-                    xyzRGB = [(xyzRGB[i, 0], xyzRGB[i, 1], xyzRGB[i, 2], xyzRGB[i, 3], xyzRGB[i, 4], xyzRGB[i, 5]) for i in range(xyzRGB.shape[0])]
-                    xyzRGB_gt = [(xyzRGB_gt[i, 0], xyzRGB_gt[i, 1], xyzRGB_gt[i, 2], xyzRGB_gt[i, 3], xyzRGB_gt[i, 4], xyzRGB_gt[i, 5]) for i in range(xyzRGB_gt.shape[0])]
-                    vertex = PlyElement.describe(np.array(xyzRGB, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')]), 'vertex')
-                    PlyData([vertex]).write(filepath)
-                    print('PLY visualization file saved in', filepath)
-                    vertex = PlyElement.describe(np.array(xyzRGB_gt, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')]), 'vertex')
-                    PlyData([vertex]).write(filepath_gt)
-                    print('PLY visualization file saved in', filepath_gt)
-                    os.system('rm -rf '+'outputs/'+args.exp_name+'/visualization/area_'+test_area+'/'+roomname+'/*.txt')
-                else:
-                    filename = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'.txt'
-                    filename_gt = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.txt'
-                    filename_mIoU = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_pred_'+mIoU+'.txt'
-                    os.rename(filename, filename_mIoU)
-                    print('TXT visualization file saved in', filename_mIoU)
-                    print('TXT visualization file saved in', filename_gt)
-            elif visu_format != 'ply' and visu_format != 'txt':
-                print('ERROR!! Unknown visualization format: %s, please use txt or ply.' % \
-                (visu_format))
-                exit()
+#             if roomname != roomname_next:
+#                 mIoU = np.nanmean(calculate_sem_IoU(np.array(room_pred), np.array(room_seg)))
+#                 mIoU = str(round(mIoU, 4))
+#                 room_pred = []
+#                 room_seg = []
+#                 if visu_format == 'ply':
+#                     filepath = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_pred_'+mIoU+'.ply'
+#                     filepath_gt = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.ply'
+#                     xyzRGB = np.loadtxt('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'.txt')
+#                     xyzRGB_gt = np.loadtxt('outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.txt')
+#                     xyzRGB = [(xyzRGB[i, 0], xyzRGB[i, 1], xyzRGB[i, 2], xyzRGB[i, 3], xyzRGB[i, 4], xyzRGB[i, 5]) for i in range(xyzRGB.shape[0])]
+#                     xyzRGB_gt = [(xyzRGB_gt[i, 0], xyzRGB_gt[i, 1], xyzRGB_gt[i, 2], xyzRGB_gt[i, 3], xyzRGB_gt[i, 4], xyzRGB_gt[i, 5]) for i in range(xyzRGB_gt.shape[0])]
+#                     vertex = PlyElement.describe(np.array(xyzRGB, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')]), 'vertex')
+#                     PlyData([vertex]).write(filepath)
+#                     print('PLY visualization file saved in', filepath)
+#                     vertex = PlyElement.describe(np.array(xyzRGB_gt, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')]), 'vertex')
+#                     PlyData([vertex]).write(filepath_gt)
+#                     print('PLY visualization file saved in', filepath_gt)
+#                     os.system('rm -rf '+'outputs/'+args.exp_name+'/visualization/area_'+test_area+'/'+roomname+'/*.txt')
+#                 else:
+#                     filename = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'.txt'
+#                     filename_gt = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_gt.txt'
+#                     filename_mIoU = 'outputs/'+args.exp_name+'/'+'visualization'+'/'+'area_'+test_area+'/'+roomname+'/'+roomname+'_pred_'+mIoU+'.txt'
+#                     os.rename(filename, filename_mIoU)
+#                     print('TXT visualization file saved in', filename_mIoU)
+#                     print('TXT visualization file saved in', filename_gt)
+#             elif visu_format != 'ply' and visu_format != 'txt':
+#                 print('ERROR!! Unknown visualization format: %s, please use txt or ply.' % \
+#                 (visu_format))
+#                 exit()
             
         
 def train(args, io):
