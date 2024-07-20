@@ -4,13 +4,6 @@ from utils.ply import read_ply, write_ply
 from sklearn.metrics import confusion_matrix
 from sklearn.neighbors import KDTree
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
-=======
-
-# from RandLANet import Network, compute_loss, compute_acc, IoUCalculator
-# from drop_dataset import SemanticKITTI
-from torch.utils.data import DataLoader
->>>>>>> e2952ef6efc810c92a45f9bf9af90679d66ff497
 from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
 import open3d as o3d

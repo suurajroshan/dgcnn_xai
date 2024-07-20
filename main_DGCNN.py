@@ -1,10 +1,4 @@
 from helper_tool import ConfigS3DIS as cfg
-<<<<<<< HEAD
-=======
-
-# from RandLANet import Network, compute_loss, compute_acc, IoUCalculator
-# from semantic_kitti_dataset import SemanticKITTI
->>>>>>> e2952ef6efc810c92a45f9bf9af90679d66ff497
 import numpy as np
 import os, argparse
 
