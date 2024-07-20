@@ -42,6 +42,7 @@ def get_graph_feature(x, k=20, idx=None, dim9=False):
 
     return feature  # (batch_size, 2*num_dims, num_points, k)
 
+
 class DGCNN_semseg_s3dis(nn.Module):
     def __init__(self, args):
         super(DGCNN_semseg_s3dis, self).__init__()
