@@ -25,15 +25,19 @@ jobs:
       run: pip install black
 
     - name: Run Black
-      run: black --check .
+      run: black .
 
-    - name: Create Pull Request
-      if: failure()
-      uses: peter-evans/create-pull-request@v3
+    - name: Commit changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m 'Run Black formatter' || echo "No changes to commit"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
       with:
-        commit-message: 'Run Black formatter'
-        committer: GitHub <noreply@github.com>
-        author: GitHub <noreply@github.com>
-        title: 'Black Formatter'
-        body: 'This PR formats the code using Black'
-        branch: black-fix-branch
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main
