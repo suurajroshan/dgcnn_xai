@@ -1,6 +1,6 @@
 from helper_tool import ConfigS3DIS as cfg
-from RandLANet import Network, compute_loss, compute_acc, IoUCalculator
-from semantic_kitti_dataset import SemanticKITTI
+# from RandLANet import Network, compute_loss, compute_acc, IoUCalculator
+# from semantic_kitti_dataset import SemanticKITTI
 import numpy as np
 import os, argparse
 
@@ -11,10 +11,8 @@ import torch.optim as optim
 from datetime import datetime
 from pGSCAM import PowerCAM, TSNE_cls, Drop_attack, piecewise_pGSCAM
 from tqdm import tqdm
-from dgcnn_pytorch.data import our_data
-from dgcnn_pytorch.model import DGCNN_semseg_ourData
-
-
+from dgcnn_utils.data import our_data
+from dgcnn_utils.model import DGCNN_semseg_ourData
 
 
 parser = argparse.ArgumentParser()
@@ -78,7 +76,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # device = torch.device('cpu')
 
 net = DGCNN_semseg_ourData(cfg).to(device)
-net = nn.DataParallel(net)
+# net = nn.DataParallel(net)
 
 # Load the Adam optimizer
 optimizer = optim.Adam(net.parameters(), lr=cfg.learning_rate)

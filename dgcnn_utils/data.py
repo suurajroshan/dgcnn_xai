@@ -257,7 +257,7 @@ class S3DIS(Dataset):
         print(self.seg.shape, 'seg shape')
         self.num_points = num_points
         self.partition = partition    
-        self.semseg_colors = load_color_semseg()
+        # self.semseg_colors = load_color_semseg()
 
     def __getitem__(self, item):
         pointcloud = self.data[item][:self.num_points]
@@ -276,13 +276,12 @@ class S3DIS(Dataset):
 
 class our_data(Dataset):
     def __init__(self, num_points=2048, partition='train', data_path=None): 
-        ALL_DATA = get_data_files(data_path, num_points)
+        get_data_files(data_path, num_points)
         print('.h5 file saved')
         self.data, self.seg = load_data_file(data_path, partition)
         self.data = self.data[:, :, :6] # use [x y z nx ny nz] features
         self.num_points = num_points
         self.partition = partition    
-        self.semseg_colors = load_color_semseg()
         print('Original CLASSES: ', np.unique(self.seg))
 
         class_map = {1: 0, 2: 1, 3: 2, 4: 3, 7: 4}
