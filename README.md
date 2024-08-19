@@ -4,7 +4,7 @@ Implementation of the paper *Interpretable LiDAR point cloud semantic segmentati
 ## Pretrained Model (S3DIS dataset)
 To run a pretrain of DGCNN (Dynamic Graph Convolution Neural Networks) S3DIS dataset:
 ```
-
+python main_semseg_s3dis.py --exp_name=semseg_s3dis_6 --test_area=6 
 ```
 
 ## Training on Custom Dataset
